@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Header } from '../components/Header';
-import { Modal } from '../components/Modal';
-import { auth } from '../firebase';
+import { Header } from './Header';
+import { Modal } from './Modal';
+import { auth } from './firebase';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 
 interface LoginViewProps {
@@ -37,22 +37,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onBack, onLoginSuccess, on
       if (emailToReset) {
         try {
           await sendPasswordResetEmail(auth, emailToReset);
-          setModalState({
-            isOpen: true,
-            title: 'CORREO ENVIADO',
-            message: 'Se ha enviado un correo para restablecer su contraseña. Por favor revise su bandeja de entrada.',
-            type: 'alert',
-            inputValue: '',
-          });
+          setModalState({ isOpen: true, title: 'CORREO ENVIADO', message: 'Se ha enviado un correo para restablecer su contraseña. Por favor revise su bandeja de entrada.', type: 'alert', inputValue: '' });
         } catch (error: any) {
           console.error(error);
-          setModalState({
-            isOpen: true,
-            title: 'ERROR',
-            message: 'Verifique que el correo esté bien escrito o que la cuenta exista.',
-            type: 'alert',
-            inputValue: '',
-          });
+          setModalState({ isOpen: true, title: 'ERROR', message: 'Verifique que el correo esté bien escrito o que la cuenta exista.', type: 'alert', inputValue: '' });
         }
       }
     } else {
@@ -88,74 +76,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onBack, onLoginSuccess, on
   };
 
   const handleForgotPassword = () => {
-    setModalState({
-      isOpen: true,
-      title: 'RECUPERAR CONTRASEÑA',
-      message: 'Por favor, ingrese su correo electrónico para recuperar su contraseña:',
-      type: 'prompt',
-      inputValue: email || '',
-    });
+    setModalState({ isOpen: true, title: 'RECUPERAR CONTRASEÑA', message: 'Por favor, ingrese su correo electrónico para recuperar su contraseña:', type: 'prompt', inputValue: email || '' });
   };
 
   return (
     <div className="min-h-screen pt-24 pb-10 px-4 sm:px-6">
       <Header title="INICIAR SESIÓN" onBack={onBack} />
-      
       <div className="max-w-md mx-auto bg-[#FFD580]/10 p-8 rounded-3xl border-2 border-[#FFD580]/30 shadow-2xl">
         <p className="text-center text-xl mb-8 opacity-80">Ingrese sus datos para acceder a las funciones protegidas.</p>
-        
         <div className="space-y-6">
           <div>
             <label className="block text-[#FFD580] text-lg font-bold mb-2">CORREO ELECTRÓNICO</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] focus:outline-none focus:ring-2 focus:ring-[#FFD580]"
-              placeholder="ejemplo@correo.com"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-[#FFD580] text-lg font-bold mb-2">CONTRASEÑA</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] focus:outline-none focus:ring-2 focus:ring-[#FFD580]"
-              placeholder="******"
-            />
-          </div>
-
-          {error && <div className="bg-red-500/20 border border-red-500 p-4 rounded-xl text-red-200 text-center font-bold">{error}</div>}
-
-          <button 
-            onClick={handleLogin}
-            disabled={loading}
-            className="w-full bg-[#FFD580] text-[#001F3F] text-2xl font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform disabled:opacity-50"
-          >
-            {loading ? 'CARGANDO...' : 'ENTRAR'}
-          </button>
-
-          <div className="text-center pt-4 space-y-2">
-            <p className="mb-2">¿No tiene cuenta?</p>
-            <button onClick={onRegister} className="block w-full text-[#FFD580] font-bold underline text-xl">REGISTRARSE AQUÍ</button>
-            <button onClick={handleForgotPassword} className="block w-full text-gray-400 underline text-lg">¿OLVIDÓ SU CONTRASEÑA?</button>
-          </div>
-        </div>
-      </div>
-
-      <Modal
-        isOpen={modalState.isOpen}
-        title={modalState.title}
-        message={modalState.message}
-        type={modalState.type}
-        inputValue={modalState.inputValue}
-        onInputChange={(val) => setModalState(prev => ({ ...prev, inputValue: val }))}
-        onClose={closeModal}
-        onSubmit={handleModalSubmit}
-        submitText={modalState.type === 'prompt' ? 'ENVIAR' : 'ACEPTAR'}
-      />
-    </div>
-  );
-};
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] focus:outline-none focu
