@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './Header';
-```
-
----
-
-**Busca:**
-```
-import { Modal } from './components/Modal';
-import { Modal } from '../components/Modal';
-import { Note } from '../types';
-import { db, auth } from '../firebase';
+import { Modal } from './Modal';
+import { Note } from './types';
+import { db, auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { 
   collection, 
@@ -22,7 +15,7 @@ import {
   doc,
   updateDoc
 } from 'firebase/firestore';
-import { OperationType, handleFirestoreError } from '../utils/firebaseError';
+import { OperationType, handleFirestoreError } from './firebaseError';
 import { X, Pencil } from 'lucide-react';
 
 interface NotesViewProps {
@@ -52,7 +45,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ onBack }) => {
   useEffect(() => {
     let unsubscribeSnapshot: () => void;
 
-    // Fetch notes regardless of auth state
     try {
       const q = query(collection(db, 'notes'), orderBy('createdAt', 'desc'));
       
@@ -96,30 +88,21 @@ export const NotesView: React.FC<NotesViewProps> = ({ onBack }) => {
   const handleAdd = async () => {
     if (!text.trim()) return;
     if (!auth.currentUser) {
-      setModalState({
-        isOpen: true,
-        title: 'ERROR',
-        message: 'Debe iniciar sesión para publicar notas.',
-      });
+      setModalState({ isOpen: true, title: 'ERROR', message: 'Debe iniciar sesión para publicar notas.' });
       return;
     }
-    
     try {
       await addDoc(collection(db, 'notes'), {
         content: text,
         authorEmail: auth.currentUser.email || 'Anónimo',
         authorUid: auth.currentUser.uid,
         createdAt: serverTimestamp(),
-        date: new Date().toLocaleString() // Fallback for display
+        date: new Date().toLocaleString()
       });
       setText('');
     } catch (err) {
       console.error("Error al publicar nota:", err);
-      setModalState({
-        isOpen: true,
-        title: 'ERROR',
-        message: 'No se pudo publicar la nota. Intente de nuevo.',
-      });
+      setModalState({ isOpen: true, title: 'ERROR', message: 'No se pudo publicar la nota. Intente de nuevo.' });
       handleFirestoreError(err, OperationType.WRITE, 'notes');
     }
   };
@@ -141,9 +124,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ onBack }) => {
   const saveEdit = async (noteId: string) => {
     if (!editContent.trim()) return;
     try {
-      await updateDoc(doc(db, 'notes', noteId), {
-        content: editContent
-      });
+      await updateDoc(doc(db, 'notes', noteId), { content: editContent });
       setEditingNoteId(null);
       setEditContent('');
     } catch (err) {
@@ -170,30 +151,19 @@ export const NotesView: React.FC<NotesViewProps> = ({ onBack }) => {
               className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] h-64"
               placeholder="Escriba una nueva nota del editor..."
             />
-            <div className="text-right text-[#FFD580]/60 text-sm mt-1">
-              {text.length} / 5000 caracteres
-            </div>
-            <button 
-              onClick={handleAdd}
-              className="w-full mt-4 bg-[#FFD580] text-[#001F3F] text-2xl font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform"
-            >
+            <div className="text-right text-[#FFD580]/60 text-sm mt-1">{text.length} / 5000 caracteres</div>
+            <button onClick={handleAdd} className="w-full mt-4 bg-[#FFD580] text-[#001F3F] text-2xl font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform">
               PUBLICAR NOTA
             </button>
           </div>
         )}
-
         <div className="space-y-4">
           {loading ? (
             <p className="text-center text-[#FFD580]">Cargando notas...</p>
           ) : error ? (
             <div className="bg-red-500/20 border-2 border-red-500 p-6 rounded-3xl text-center">
               <p className="text-red-400 font-bold mb-4">{error}</p>
-              <button 
-                onClick={() => window.location.reload()}
-                className="bg-[#FFD580] text-[#001F3F] font-bold py-2 px-4 rounded-xl"
-              >
-                Reintentar
-              </button>
+              <button onClick={() => window.location.reload()} className="bg-[#FFD580] text-[#001F3F] font-bold py-2 px-4 rounded-xl">Reintentar</button>
             </div>
           ) : notes.length === 0 ? (
             <p className="text-center text-[#FFD580]/60">No hay notas publicadas aún.</p>
@@ -202,26 +172,14 @@ export const NotesView: React.FC<NotesViewProps> = ({ onBack }) => {
               <div key={note.id} className="bg-[#FFD580] text-[#001F3F] p-6 rounded-2xl shadow-lg relative">
                 {isEditor && (
                   <div className="absolute top-2 right-2 flex gap-2">
-                    <button onClick={() => startEdit(note)} className="p-2 hover:bg-[#001F3F]/10 rounded-full transition-colors" aria-label="Editar">
-                      <Pencil size={20} />
-                    </button>
-                    <button onClick={() => handleDelete(note.id)} className="p-2 hover:bg-red-500/20 text-red-600 rounded-full transition-colors" aria-label="Eliminar">
-                      <X size={24} />
-                    </button>
+                    <button onClick={() => startEdit(note)} className="p-2 hover:bg-[#001F3F]/10 rounded-full transition-colors" aria-label="Editar"><Pencil size={20} /></button>
+                    <button onClick={() => handleDelete(note.id)} className="p-2 hover:bg-red-500/20 text-red-600 rounded-full transition-colors" aria-label="Eliminar"><X size={24} /></button>
                   </div>
                 )}
-                
                 {editingNoteId === note.id ? (
                   <div className="mt-2">
-                    <textarea 
-                      value={editContent}
-                      onChange={(e) => setEditContent(e.target.value)}
-                      maxLength={5000}
-                      className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-3 rounded-xl text-xl text-[#FFFDD0] h-64 mb-1"
-                    />
-                    <div className="text-right text-[#001F3F]/60 text-sm mb-4">
-                      {editContent.length} / 5000 caracteres
-                    </div>
+                    <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} maxLength={5000} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-3 rounded-xl text-xl text-[#FFFDD0] h-64 mb-1" />
+                    <div className="text-right text-[#001F3F]/60 text-sm mb-4">{editContent.length} / 5000 caracteres</div>
                     <div className="flex gap-4">
                       <button onClick={() => saveEdit(note.id)} className="flex-1 bg-[#001F3F] text-[#FFD580] px-4 py-3 rounded-xl font-bold text-lg">GUARDAR</button>
                       <button onClick={cancelEdit} className="flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-bold text-lg">CANCELAR</button>
@@ -241,13 +199,8 @@ export const NotesView: React.FC<NotesViewProps> = ({ onBack }) => {
           )}
         </div>
       </div>
-
-      <Modal
-        isOpen={modalState.isOpen}
-        title={modalState.title}
-        message={modalState.message}
-        onClose={closeModal}
-      />
+      <Modal isOpen={modalState.isOpen} title={modalState.title} message={modalState.message} onClose={closeModal} />
     </div>
   );
 };
+
