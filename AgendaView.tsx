@@ -8,9 +8,7 @@ import {
   setDoc, 
   deleteDoc,
   onSnapshot, 
-  collection,
-  query,
-  where
+  collection
 } from 'firebase/firestore';
 import { OperationType, handleFirestoreError } from './firebaseError';
 
@@ -104,7 +102,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onBack }) => {
       setModalState({ isOpen: true, title: '¡ÉXITO!', message: 'Evento guardado correctamente.' });
     } catch (error) {
       setModalState({ isOpen: true, title: 'ERROR', message: 'Error al guardar el evento. Revise los permisos.' });
-      try { handleFirestoreError(error, OperationType.WRITE, 'users/' + auth.currentUser.uid + '/agenda/' + selectedDate); } catch (e) { console.error(e); }
+      try { handleFirestoreError(error, OperationType.WRITE, 'users/' + auth.currentUser!.uid + '/agenda/' + selectedDate); } catch (e) { console.error(e); }
     }
   };
 
@@ -117,7 +115,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onBack }) => {
       setModalState({ isOpen: true, title: '¡ÉXITO!', message: 'Recordatorio eliminado correctamente.' });
     } catch (error) {
       setModalState({ isOpen: true, title: 'ERROR', message: 'Error al eliminar el recordatorio.' });
-      try { handleFirestoreError(error, OperationType.DELETE, 'users/' + auth.currentUser.uid + '/agenda/' + dateToDelete); } catch (e) { console.error(e); }
+      try { handleFirestoreError(error, OperationType.DELETE, 'users/' + auth.currentUser!.uid + '/agenda/' + dateToDelete); } catch (e) { console.error(e); }
     }
   };
 
@@ -168,4 +166,63 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ onBack }) => {
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <label className="block text-[#FFD580] text-lg font-bold mb-2">HORA</label>
-                    <select value={hour} onChange={(e) => setHour(parseInt(e.target.value))} className="w-full bg-[#001F3F] border-2 border-[
+                    <select value={hour} onChange={(e) => setHour(parseInt(e.target.value))} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0]">
+                      {Array.from({ length: 24 }, (_, i) => <option key={i} value={i}>{String(i).padStart(2, '0')}</option>)}
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-[#FFD580] text-lg font-bold mb-2">MINUTOS</label>
+                    <select value={minute} onChange={(e) => setMinute(parseInt(e.target.value))} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0]">
+                      {Array.from({ length: 60 }, (_, i) => <option key={i} value={i}>{String(i).padStart(2, '0')}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-4 mt-4">
+                <button onClick={handleSave} className="flex-1 bg-[#FFD580] text-[#001F3F] text-2xl font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform">GUARDAR</button>
+                {events[selectedDate] && (
+                  <button onClick={() => handleDelete(selectedDate)} className="bg-red-600 text-white text-xl font-bold py-4 px-6 rounded-xl shadow-lg active:scale-95 transition-transform">BORRAR</button>
+                )}
+              </div>
+            </div>
+
+            {events[selectedDate] && (
+              <div className="bg-[#FFD580] text-[#001F3F] p-4 rounded-xl font-bold text-center animate-pulse">
+                ¡TIENE UN RECORDATORIO PARA HOY A LAS {String(events[selectedDate].hour).padStart(2, '0')}:{String(events[selectedDate].minute).padStart(2, '0')}!
+              </div>
+            )}
+
+            <div className="bg-[#FFD580]/10 p-6 rounded-3xl border-2 border-[#FFD580]/30 mt-6">
+              <h3 className="text-[#FFD580] text-xl font-bold mb-4">TODOS LOS RECORDATORIOS</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[#FFFDD0]">
+                  <thead>
+                    <tr className="border-b border-[#FFD580]/30">
+                      <th className="text-left p-2">Fecha</th>
+                      <th className="text-left p-2">Hora</th>
+                      <th className="text-left p-2">Recordatorio</th>
+                      <th className="text-center p-2">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(events).sort().map(([date, event]) => (
+                      <tr key={date} className="border-b border-[#FFD580]/10">
+                        <td className="p-2 font-bold">{date}</td>
+                        <td className="p-2 font-bold">{event.hour !== undefined ? `${String(event.hour).padStart(2, '0')}:${String(event.minute).padStart(2, '0')}` : '-'}</td>
+                        <td className="p-2">{event.note}</td>
+                        <td className="p-2 text-center">
+                          <button onClick={() => handleDelete(date)} className="bg-red-500/20 hover:bg-red-500/40 text-red-400 p-2 rounded-lg transition-colors" title="Eliminar recordatorio">🗑️</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      <Modal isOpen={modalState.isOpen} title={modalState.title} message={modalState.message} onClose={closeModal} />
+    </div>
+  );
+};
