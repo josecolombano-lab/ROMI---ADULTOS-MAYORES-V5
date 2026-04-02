@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ViewState } from './types';
-import { SplashScreen } from './components/SplashScreen';
-import { MainMenu } from './components/MainMenu';
-import { AgendaView } from './views/AgendaView';
-import { NotesView } from './views/NotesView';
-import { ExternalView } from './views/ExternalView';
-import { RegisterView } from './views/RegisterView';
-import { LoginView } from './views/LoginView';
+import { SplashScreen } from './SplashScreen';
+import { MainMenu } from './MainMenu';
+import { AgendaView } from './AgendaView';
+import { NotesView } from './NotesView';
+import { ExternalView } from './ExternalView';
+import { RegisterView } from './RegisterView';
+import { LoginView } from './LoginView';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>(ViewState.SPLASH);
