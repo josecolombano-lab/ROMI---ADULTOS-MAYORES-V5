@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from '../components/Header';
+import { Header } from './Header';
+```
+
+---
+
+**Busca:**
+```
+import { Modal } from './components/Modal';
 import { Modal } from '../components/Modal';
 import { Note } from '../types';
 import { db, auth } from '../firebase';
