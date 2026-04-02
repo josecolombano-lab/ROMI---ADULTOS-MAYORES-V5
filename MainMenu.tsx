@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ViewState } from '../types';
+import { ViewState } from './types';
 import { SectionButton } from './SectionButton';
 import { Modal } from './Modal';
-import { auth } from '../firebase';
+import { auth } from './firebase';
 import { onAuthStateChanged, signOut, sendPasswordResetEmail } from 'firebase/auth';
 
 interface MainMenuProps {
