@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 import type { Auth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import type { Firestore } from "firebase/firestore";
-import firebaseConfig from "../firebase-applet-config.json";
+import firebaseConfig from "./firebase-applet-config.json";
 
 // Singleton Pattern: Check if an app is already initialized to avoid crashes
 let app: FirebaseApp;
