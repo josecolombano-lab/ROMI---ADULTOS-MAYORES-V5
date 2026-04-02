@@ -87,4 +87,24 @@ export const LoginView: React.FC<LoginViewProps> = ({ onBack, onLoginSuccess, on
         <div className="space-y-6">
           <div>
             <label className="block text-[#FFD580] text-lg font-bold mb-2">CORREO ELECTRÓNICO</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] focus:outline-none focu
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] focus:outline-none focus:ring-2 focus:ring-[#FFD580]" placeholder="ejemplo@correo.com" />
+          </div>
+          <div>
+            <label className="block text-[#FFD580] text-lg font-bold mb-2">CONTRASEÑA</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-[#001F3F] border-2 border-[#FFD580] p-4 rounded-xl text-xl text-[#FFFDD0] focus:outline-none focus:ring-2 focus:ring-[#FFD580]" placeholder="******" />
+          </div>
+          {error && <div className="bg-red-500/20 border border-red-500 p-4 rounded-xl text-red-200 text-center font-bold">{error}</div>}
+          <button onClick={handleLogin} disabled={loading} className="w-full bg-[#FFD580] text-[#001F3F] text-2xl font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform disabled:opacity-50">
+            {loading ? 'CARGANDO...' : 'ENTRAR'}
+          </button>
+          <div className="text-center pt-4 space-y-2">
+            <p className="mb-2">¿No tiene cuenta?</p>
+            <button onClick={onRegister} className="block w-full text-[#FFD580] font-bold underline text-xl">REGISTRARSE AQUÍ</button>
+            <button onClick={handleForgotPassword} className="block w-full text-gray-400 underline text-lg">¿OLVIDÓ SU CONTRASEÑA?</button>
+          </div>
+        </div>
+      </div>
+      <Modal isOpen={modalState.isOpen} title={modalState.title} message={modalState.message} type={modalState.type} inputValue={modalState.inputValue} onInputChange={(val) => setModalState(prev => ({ ...prev, inputValue: val }))} onClose={closeModal} onSubmit={handleModalSubmit} submitText={modalState.type === 'prompt' ? 'ENVIAR' : 'ACEPTAR'} />
+    </div>
+  );
+};
