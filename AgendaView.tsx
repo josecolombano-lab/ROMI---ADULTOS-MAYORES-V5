@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from '../components/Header';
-import { Modal } from '../components/Modal';
-import { db, auth } from '../firebase';
+import { Header } from './components/Header';
+import { Modal } from './components/Modal';
+import { db, auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { 
   doc, 
@@ -12,7 +12,7 @@ import {
   query,
   where
 } from 'firebase/firestore';
-import { OperationType, handleFirestoreError } from '../utils/firebaseError';
+import { OperationType, handleFirestoreError } from './utils/firebaseError';
 
 interface AgendaViewProps {
   onBack: () => void;
