@@ -1,1 +1,10 @@
-
+{
+  "projectId": "ai-studio-applet-webapp-6a1c9",
+  "appId": "1:691871576993:web:05874573f496365fef91e0",
+  "apiKey": "AIzaSyD1YPHC3JLqjCN0EPuirAI-KDMv2RXie10",
+  "authDomain": "ai-studio-applet-webapp-6a1c9.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-bf5906e4-357d-4846-95eb-035f4bc9799e",
+  "storageBucket": "ai-studio-applet-webapp-6a1c9.firebasestorage.app",
+  "messagingSenderId": "691871576993",
+  "measurementId": ""
+}
